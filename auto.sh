@@ -145,7 +145,7 @@ brew_packages() {
     if is_macos; then
         if [[ ! -z "$cask_list" ]]; then
             terminal_printf mbs "Attempting to install cask ${cask_list}..."
-            if brew install --cask "${cask_list}" -y; then
+            if brew install --cask "${cask_list}" -f; then
                 terminal_printf ??d "Package ${cask_list} installed.\n"
             else
                 terminal_printf ??f "Package ${cask_list} install failed.\n"
@@ -156,7 +156,7 @@ brew_packages() {
     fi
     if [[ ! -z "$term_list" ]]; then
         terminal_printf mbs "Attempting to install ${term_list}..."
-        if brew install "${term_list}" -y; then
+        if brew install "${term_list}" -f; then
             terminal_printf ??d "Package ${term_list} installed.\n"
         else
             terminal_printf ??f "Package ${term_list} install failed.\n"
