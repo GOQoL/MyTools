@@ -144,23 +144,27 @@ install_homebrew() {
 brew_packages() {
     if is_macos; then
         if [[ ! -z "$cask_list" ]]; then
-            terminal_printf mbs "Attempting to install cask ${cask_list}..."
-            if brew install --cask "${cask_list}" -f; then
-                terminal_printf ??d "Package ${cask_list} installed.\n"
-            else
-                terminal_printf ??f "Package ${cask_list} install failed.\n"
-            fi
+            for cask in ${cask_list}; do
+                terminal_printf mbs "Attempting to install cask ${cask}..."
+                if brew install --cask "${cask}" -f; then
+                    terminal_printf ??d "Package ${cask} installed.\n"
+                else
+                    terminal_printf ??f "Package ${cask} install failed.\n"
+                fi
+            done
         fi
     else
         term_list="$term_list docker-completion docker docker-compose"
     fi
     if [[ ! -z "$term_list" ]]; then
-        terminal_printf mbs "Attempting to install ${term_list}..."
-        if brew install "${term_list}" -f; then
-            terminal_printf ??d "Package ${term_list} installed.\n"
-        else
-            terminal_printf ??f "Package ${term_list} install failed.\n"
-        fi
+        for pkg in ${term_list}; do
+            terminal_printf mbs "Attempting to install ${pkg}..."
+            if brew install "${pkg}" -f; then
+                terminal_printf ??d "Package ${pkg} installed.\n"
+            else
+                terminal_printf ??f "Package ${pkg} install failed.\n"
+            fi
+        done
     fi
 }
 
@@ -187,6 +191,7 @@ main() {
         brew_cleanup
     fi
     terminal_printf gb? "\nScript completed."
+    chsh -s $(which zsh)
 }
 
 main "${@}"
