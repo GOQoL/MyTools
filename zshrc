@@ -5,6 +5,24 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+OS="$(uname)"
+is_macos() {    
+    [[ "${OS}" == "Darwin" ]] && true && return
+    false
+}
+
+if is_macos; then
+    UNAME_MACHINE="$(/usr/bin/uname -m)"
+    if [[ "${UNAME_MACHINE}" == "arm64" ]] then
+        HOMEBREW_PREFIX="/opt/homebrew"
+    else
+        HOMEBREW_PREFIX="/usr/local"
+    fi
+else
+    HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
+fi
+export HOMEBREW_PREFIX="${HOMEBREW_PREFIX}"
+
 # brew
 eval "$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
 
