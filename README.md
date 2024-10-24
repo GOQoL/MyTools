@@ -13,7 +13,7 @@ xcode-select --install
 ### Ubuntu
 To install build tools, paste at a terminal prompt:
 ```bash
-sudo apt install zsh build-essential procps curl file git
+sudo apt install zsh build-essential procps curl file git -y
 ```
 
 ## Usage 

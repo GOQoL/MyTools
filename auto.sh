@@ -103,17 +103,10 @@ setting_zsh() {
     else
         HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
     fi
-    export HOMEBREW_PREFIX
-    if [[ "$(bash -c 'echo ${HOMEBREW_PREFIX}')" ]] then 
-        terminal_printf ??d "HOMEBREW_PREFIX exported."
-    else
-        terminal_printf ??f "HOMEBREW_PREFIX failed."
-    fi
+    export HOMEBREW_PREFIX="${HOMEBREW_PREFIX}"
+    eval "$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
 
     terminal_printf ??s "Config zshrc, p10k ..."
-    echo >> ${HOME}/.zshrc
-    zsh
-
     curl -fsSL -o ${HOME}/.zshrc https://raw.githubusercontent.com/GOQoL/MyTools/main/zshrc
     curl -fsSL -o ${HOME}/.p10k.zsh https://raw.githubusercontent.com/GOQoL/MyTools/main/p10k.zsh
     terminal_printf ??d "Config completed.$(tput el)"
