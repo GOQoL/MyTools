@@ -88,26 +88,32 @@ install_dependency() {
             fi
             exit 1
         fi
-    else
-        terminal_printf ??s "Running update..."
-        if apt-get update >/dev/null 2>&1; then
-            terminal_printf ??d "Update completed.$(tput el)"
-        else
-            terminal_printf ??f "Update failed.$(tput el)"
-            exit 1
-        fi
-        terminal_printf mb? "Attempting to install build tools..."
-        if apt-get install zsh build-essential procps curl file git -y >/dev/null 2>&1; then
-            terminal_printf gb? "Build tools have finished installing.\n"
-        else
-            terminal_printf rb? "Build tools install failed.\n"
-            exit 1
-        fi
     fi
 }
 
 setting_zsh() {
+    HOMEBREW_PREFIX=""
+    if is_macos; then
+        UNAME_MACHINE="$(/usr/bin/uname -m)"
+        if [[ "${UNAME_MACHINE}" == "arm64" ]] then
+            HOMEBREW_PREFIX="/opt/homebrew"
+        else
+            HOMEBREW_PREFIX="/usr/local"
+        fi
+    else
+        HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
+    fi
+    export HOMEBREW_PREFIX
+    if [[ "$(bash -c 'echo ${HOMEBREW_PREFIX}')" ]] then 
+        terminal_printf ??d "HOMEBREW_PREFIX exported."
+    else
+        terminal_printf ??f "HOMEBREW_PREFIX failed."
+    fi
+
     terminal_printf ??s "Config zshrc, p10k ..."
+    echo >> ${HOME}/.zshrc
+    zsh
+
     curl -fsSL -o ${HOME}/.zshrc https://raw.githubusercontent.com/GOQoL/MyTools/main/zshrc
     curl -fsSL -o ${HOME}/.p10k.zsh https://raw.githubusercontent.com/GOQoL/MyTools/main/p10k.zsh
     terminal_printf ??d "Config completed.$(tput el)"
@@ -182,9 +188,11 @@ main() {
     waiting_confirm
     install_dependency
     install_homebrew
-    brew_packages
-    brew_cleanup
     setting_zsh
+    if command_exists "brew"; then
+        brew_packages
+        brew_cleanup
+    fi
     terminal_printf gb? "\nScript completed."
 }
 
